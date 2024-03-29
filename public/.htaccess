@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# If requested File is not a directory
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# If requested File is not a file
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# If requested File is not a link
+RewriteCond %{REQUEST_FILENAME} !-l
+
+
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
