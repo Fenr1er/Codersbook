@@ -1,20 +1,28 @@
 <?php
 
+// Definiert den Namespace, in dem sich die Klasse befindet.
 namespace App\Core;
 
+// Importiert die Closure-Klasse für die Verwendung von anonymen Funktionen.
 use Closure;
 
+// Die Application-Klasse dient als zentraler Punkt für die Anwendungslogik.
 class Application
 {
-    protected static Instance $instance; //protected ist ein Zugriffsmodifizierer, der nur in der Klasse selbst und in abgeleiteten Klassen verwendet werden kann. static ist ein Schlüsselwort, das verwendet wird, um eine Eigenschaft oder Methode als statisch zu deklarieren. Das bedeutet, dass die Eigenschaft oder Methode auf die Klasse selbst und nicht auf eine Instanz der Klasse angewendet wird. 
+    // Eine statisch geschützte Variable, die eine Instanz der `Instance`-Klasse speichert.
+    protected static Instance $instance;
 
+    // Eine statische Methode zum Festlegen der `Instance`-Objekt.
     public static function setInstance(Instance $instance)
     {
-        self::$instance = $instance; //self ist ein Schlüsselwort, das verwendet wird, um auf die Eigenschaften und Methoden einer Klasse zuzugreifen, ohne ein Objekt der Klasse zu instanziieren. $instance ist eine Eigenschaft, die auf die Klasse angewendet wird.
+        // Speichert das übergebene `Instance`-Objekt in der statischen `$instance`-Variable der Klasse.
+        self::$instance = $instance;
     }
 
-    public static function bind(string $key, Closure $resover)
+    // Eine statische Methode zum Binden eines Schlüssels an eine Closure oder Funktion.
+    public static function bind(string $key, Closure $resolver)
     {
-        self::$instance->bind($key, $resover); //self ist ein Schlüsselwort, das verwendet wird, um auf die Eigenschaften und Methoden einer Klasse zuzugreifen, ohne ein Objekt der Klasse zu instanziieren. $instance ist eine Eigenschaft, die auf die Klasse angewendet wird, bind ist eine Methode, die verwendet wird, um eine Instanz zu binden, $key ist eine Eigenschaft, die auf die Klasse angewendet wird, $resover ist eine Eigenschaft, die auf die Klasse angewendet wird.
+        // Ruft die `bind`-Methode des `Instance`-Objekts auf, um einen Schlüssel an eine Closure zu binden.
+        self::$instance->bind($key, $resolver);
     }
 }

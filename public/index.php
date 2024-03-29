@@ -1,34 +1,40 @@
 <?php
 
+// Definiere eine Konstante `BASE_PATH`, die den Basispfad des Projekts angibt.
+// `__DIR__` gibt den Pfad des aktuellen Verzeichnisses zurück.
+// Durch Hinzufügen von "/../" navigieren wir eine Ebene höher im Verzeichnisbaum.
+const BASE_PATH = __DIR__ . "/../";
 
+// Die `require`-Anweisung fügt die spezifizierten PHP-Dateien ein.
+// Hier binden wir die Datei `helpers.php` aus dem `app/functions` Verzeichnis ein.
+require BASE_PATH . "app/functions/helpers.php";
 
-
-
-
-
-
-
-
-// ------------------ Constants ------------------
-
-const BASE_PATH = __DIR__ . "/../"; // __DIR__ ist eine Konstante, die den Pfad des aktuellen Verzeichnisses zurückgibt
-
-
-
-require BASE_PATH . "app/functions/helpers.php"; // require ist eine Funktion, die eine Datei einbindet, wenn sie nicht bereits eingebunden wurde
+// Bindet die Composer-Autoloader-Datei ein, die für das automatische Laden von Klassen erforderlich ist.
 require BASE_PATH . "vendor/autoload.php";
 
-use App\Core\Instance; // use wird verwendet, um eine Klasse zu importieren, die in einem anderen Namespace definiert ist, damit sie in diesem Namespace verwendet werden kann, ohne den vollständigen Namen der Klasse zu schreiben, Instance ist eine Klasse, die in einem anderen Namespace definiert ist.
-use APP\Core\Application; // use wird verwendet, um eine Klasse zu importieren, die in einem anderen Namespace definiert ist, damit sie in diesem Namespace verwendet werden kann, ohne den vollständigen Namen der Klasse zu schreiben, Appliocaton ist eine Klasse, die in einem anderen Namespace definiert ist.
-use APP\Core\Database;
+// Importiert die `Instance` Klasse aus dem Namespace `App\Core`.
+use App\Core\Instance;
 
+// Importiert die `Application` Klasse aus dem Namespace `App\Core`.
+use App\Core\Application;
+
+// Importiert die `Database` Klasse aus dem Namespace `App\Core`.
+use App\Core\Database;
+
+// Startet eine neue Session oder setzt eine bestehende fort.
 session_start();
 
-$instance = new Instance(); // new ist ein Operator, der verwendet wird, um ein Objekt zu instanziieren, Instance ist eine Klasse, die instanziiert wird.
-Application::setInstance($instance); // Application ist eine Klasse, die verwendet wird, um eine Instanz zu setzen, $instance ist eine Eigenschaft, die auf die Klasse angewendet wird, setInstance ist eine Methode, die verwendet wird, um eine Instanz zu setzen, :: ist ein Operator, der verwendet wird, um auf eine statische Eigenschaft oder Methode zuzugreifen, $instance ist eine Eigenschaft, die auf die Klasse angewendet wird, $instance ist eine Eigenschaft, die auf die Klasse angewendet wird.
+// Erstellt ein neues `Instance` Objekt.
+$instance = new Instance();
 
-Application::bind(Database::class, function() {//Application ist eine Klasse, die verwendet wird, um eine Instanz zu setzen, Database ist eine Klasse, die verwendet wird, um eine Datenbank zu binden, :: ist ein Operator, der verwendet wird, um auf eine statische Eigenschaft oder Methode zuzugreifen, bind ist eine Methode, die verwendet wird, um eine Instanz zu binden, Database::class ist eine Eigenschaft, die auf die Klasse angewendet wird, function() ist eine anonyme Funktion, die verwendet wird, um eine Funktion zu erstellen und sie als Argument an eine andere Funktion zu übergeben oder sie als Rückgabewert zurückzugeben oder sie in Variablen zu speichern und sie zu verwenden oder zu übergeben oder zu speichern, :: ist ein Operator, der verwendet wird, um auf eine statische Eigenschaft oder Methode zuzugreifen, $instance ist eine Eigenschaft, die auf die Klasse angewendet wird, $instance ist eine Eigenschaft, die auf die Klasse angewendet wird, $instance ist eine Eigenschaft, die auf die Klasse angewendet wird.
+// Ruft die statische Methode `setInstance` der `Application` Klasse auf und übergibt das `Instance` Objekt.
+Application::setInstance($instance);
+
+// Bindet die `Database` Klasse an eine anonyme Funktion, die ein neues `Database` Objekt zurückgibt.
+// Dies wird typischerweise in Dependency-Injection-Containern verwendet, um Abhängigkeiten zu verwalten.
+Application::bind(Database::class, function() {
     return new Database();
 });
 
-require BASE_PATH . "routes/routes.php"; // require ist eine Funktion, die eine Datei einbindet, wenn sie nicht bereits eingebunden wurde, BASE_PATH ist eine Konstante, die den Pfad des aktuellen Verzeichnisses zurückgibt, routes ist eine Datei, die eingebunden wird, routes.php ist eine Datei, die eingebunden wird.
+// Bindet die Routendefinitionen des Projekts ein, indem die Datei `routes.php` im `routes` Verzeichnis eingebunden wird.
+require BASE_PATH . "routes/routes.php";

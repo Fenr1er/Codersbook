@@ -1,23 +1,35 @@
 <?php
 
+// Gibt an, in welchem Teil des Projekts die Klasse liegt.
 namespace App\Core;
 
-use Closure; // Closure ist ein Objekt, das eine anonyme Funktion repräsentiert und es ermöglicht, Funktionen als Argumente an andere Funktionen zu übergeben oder sie als Rückgabewerte zurückzugeben oder sie in Variablen zu speichern und sie zu verwenden oder zu übergeben oder zu speichern 
-use Exception; // Exception ist eine Klasse, die die Ausnahme repräsentiert, die von PHP oder von Benutzern erzeugt wird 
+// Importiert die Closure-Klasse, die für anonyme Funktionen in PHP verwendet wird.
+use Closure;
 
+// Importiert die Exception-Klasse für Fehlerbehandlung.
+use Exception;
+
+// Die Klasse Instance verwaltet Bindungen von Schlüsseln zu Ressourcen oder Funktionen.
 class Instance
 {
+    // Ein Array, um Bindungen zu speichern. Schlüssel sind die Namen der Ressourcen oder Dienste.
     protected $bindings = [];
     
+    // Bindet einen Schlüssel an eine Funktion oder Ressource.
     public function bind(String $key, Closure $resolver){
+        // Speichert die übergebene Closure unter dem angegebenen Schlüssel im Bindungsarray.
         $this->bindings[$key] = $resolver;
     }
 
+    // Löst eine Bindung basierend auf dem Schlüssel auf und gibt das Ergebnis zurück.
     public function resolve(String $key){
-        if (!array_key_exists($key, $this->bindings)) {//array_key_exists() prüft, ob ein Schlüssel in einem Array vorhanden ist oder nicht. Der Schlüssel wird als erster Parameter übergeben und das Array als zweiter Parameter.
-            throw new Exception("No match found for {$key}");//throw wird verwendet, um eine Ausnahme zu erzeugen und zu werfen 
-    }
+        // Überprüft, ob der Schlüssel im Bindungsarray existiert.
+        if (!array_key_exists($key, $this->bindings)) {
+            // Wenn der Schlüssel nicht existiert, wird eine Exception geworfen.
+            throw new Exception("No match found for {$key}");
+        }
 
-    return call_user_func($this->bindings[$key]); // call_user_func() ruft eine Funktion mit den Argumenten auf, die in einem Array übergeben werden, und gibt das Ergebnis zurück.
+        // Ruft die Funktion auf, die dem Schlüssel zugeordnet ist, und gibt das Ergebnis zurück.
+        return call_user_func($this->bindings[$key]);
     }
 }
