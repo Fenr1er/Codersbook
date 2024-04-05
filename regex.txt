@@ -1,1 +1,2 @@
-/test/kdfjlsaö
+/test/{slug}/edit/
+test/luki/35
