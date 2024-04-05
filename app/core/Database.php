@@ -1,81 +1,92 @@
 <?php
 
-// Der Namespace für die Klassendefinition.
+// Legt fest, dass diese Klasse im Namespace 'App\Core' ist, der Teil der Kernlogik der Anwendung ist.
 namespace App\Core;
 
-// Verwendet die PDO-Klasse für die Datenbankverbindung.
+// Importiert die PDO-Klasse für Datenbankverbindungen.
 use PDO;
-// Verwendet die PDOStatement-Klasse für die Vorbereitung und Ausführung von SQL-Anweisungen.
+// Importiert die PDOStatement-Klasse für die Ausführung von SQL-Anweisungen.
 use PDOStatement;
 
-// Die Database-Klasse verwaltet die Verbindung zur Datenbank und führt SQL-Anweisungen aus.
+// Die Database-Klasse ist verantwortlich für die Verbindung zur Datenbank und deren Interaktionen.
 class Database
 {
-    // Speichert die PDO-Instanz.
+    // Speichert die Verbindungsinstanz zur Datenbank.
     private PDO|null $pdo = null;
 
-    // Wird verwendet, um vorbereitete Anweisungen zu speichern und auszuführen.
+    // Wird verwendet, um vorbereitete SQL-Anweisungen zu speichern.
     private PDOStatement $statement;
 
-    // Der Konstruktor erstellt die Datenbankverbindung.
+    // Der Konstruktor initialisiert die Datenbankverbindung.
     public function __construct()
     {
-        // Lädt die Datenbankkonfiguration.
+        // Lädt die Konfiguration für die Datenbank aus einer Konfigurationsdatei.
         $config = config("database");
 
-        // Erstellt den DSN-String basierend auf der Konfiguration.
+        // Erstellt den Data Source Name (DSN) für die PDO-Verbindung aus der Konfiguration.
         $dsn = $config['db'] . ":" . http_build_query($config, '', ';');
 
         try {
-            // Versucht, eine neue PDO-Instanz zu erstellen.
+            // Erstellt eine neue PDO-Instanz für die Datenbankverbindung.
             $this->pdo = new PDO($dsn, options: [
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, // Setzt den Standard-Fetch-Modus auf Objekt.
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Setzt den Error-Modus, um Exceptions zu werfen.
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, // Legt den Standard-Fetch-Modus fest.
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Aktiviert Exceptions für Fehlermeldungen.
             ]);
         } catch (\PDOException $e) {
-            // Zeigt den Fehler an, wenn die Verbindung fehlschlägt.
+            // Zeigt eine Fehlermeldung an, wenn die Verbindung fehlschlägt.
             dd($e->getMessage());
         }
     }
 
-    // Bereitet eine SQL-Anfrage vor und führt sie aus.
+    // Führt eine SQL-Anfrage aus und bereitet sie vor.
     public function query(string $query, $params = [])
     {
+        // Prüft, ob eine PDO-Verbindung besteht.
         if ($this->pdo != null) {
-            $this->statement = $this->pdo->prepare($query); // Bereitet die SQL-Anweisung vor.
-            $this->statement->execute($params); // Führt die Anweisung mit den übergebenen Parametern aus.
+            // Bereitet die SQL-Anweisung vor.
+            $this->statement = $this->pdo->prepare($query);
+            // Führt die Anweisung mit den gegebenen Parametern aus.
+            $this->statement->execute($params);
             return $this;
         }
     }
 
-    // Holt das erste Ergebnis einer Anfrage.
+    // Holt das erste Ergebnis einer SQL-Anfrage.
     public function find()
     {
-        $data = $this->statement->fetch(); // Holt das nächste Ergebnis der Anfrage.
-        $this->close(); // Schließt die Datenbankverbindung.
-        return $data; // Gibt das Ergebnis zurück.
+        // Holt das erste Ergebnis der Anfrage.
+        $data = $this->statement->fetch();
+        // Schließt die Datenbankverbindung.
+        $this->close();
+        return $data;
     }
 
-    // Holt alle Ergebnisse einer Anfrage.
+    // Holt alle Ergebnisse einer SQL-Anfrage.
     public function all()
     {
-        $data = $this->statement->fetchAll(); // Holt alle Ergebnisse der Anfrage.
-        $this->close(); // Schließt die Datenbankverbindung.
-        return $data; // Gibt die Ergebnisse zurück.
+        // Holt alle Ergebnisse der Anfrage.
+        $data = $this->statement->fetchAll();
+        // Schließt die Datenbankverbindung.
+        $this->close();
+        return $data;
     }
 
-    // Gibt die ID des zuletzt eingefügten Eintrags zurück.
+    // Gibt die ID des zuletzt eingefügten Datensatzes zurück.
     public function lastInsertId()
     {
-        $data = $this->pdo->lastInsertId(); // Holt die ID des zuletzt eingefügten Eintrags.
-        $this->close(); // Schließt die Datenbankverbindung.
-        return $data; // Gibt die ID zurück.
+        // Holt die letzte eingefügte ID aus der Datenbank.
+        $data = $this->pdo->lastInsertId();
+        // Schließt die Datenbankverbindung.
+        $this->close();
+        return $data;
     }
 
-    // Schließt die Datenbankverbindung.
-    public function close(){
+    // Schließt die Verbindung zur Datenbank.
+    public function close()
+    {
+        // Setzt die PDO-Instanz auf null, um die Verbindung zu schließen.
         if ($this->pdo != null) {
-            $this->pdo = null; // Setzt die PDO-Instanz auf null, um die Verbindung zu schließen.
+            $this->pdo = null;
         }
     }
 }

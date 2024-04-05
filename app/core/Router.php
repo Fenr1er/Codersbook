@@ -1,83 +1,82 @@
 <?php
 
-// Definiert, dass dieser Code im Bereich 'App\Core' des Projekts gehört.
+// Der Code gehört zum Namespace 'App\Core', was hilft, die Klassennamen im Projekt zu organisieren.
 namespace App\Core;
 
-// Bezieht die notwendigen Klassen aus demselben Namespace.
+// Importiert die Klassen 'Route' und 'RouteCollection' aus demselben Namespace.
 use App\Core\Route;
 use App\Core\RouteCollection;
 
-// Die Router-Klasse verwaltet die Routen deiner Web-App.
+// Die Router-Klasse ist zuständig für die Verwaltung der Routen in der Webanwendung.
 class Router
 {
-    // Ein statisches Attribut, um die einzige Instanz des Routers zu speichern (Singleton-Pattern).
+    // Ein privates statisches Attribut für die Singleton-Instanz des Routers.
     private static $instance = null;
 
-    // Speichert die definierten Routen.
+    // Ein geschütztes Attribut, um die definierten Routen zu speichern.
     protected $routes = [];
 
-    // Zusätzliche Daten, die während des Routings verwendet werden.
+    // Ein privates Attribut für zusätzliche Daten, die im Routing-Prozess verwendet werden können.
     private array $data = [];
 
-    // Diese Methode gibt die einzige Instanz des Router-Objekts zurück.
+    // Die `getInstance`-Methode implementiert das Singleton-Muster. Sie gibt immer dieselbe Instanz des Routers zurück.
     public static function getInstance()
     {
-        // Wenn noch keine Instanz erstellt wurde, erstelle eine.
+        // Erstellt eine neue Instanz des Routers, wenn noch keine existiert.
         if (self::$instance == null) {
             self::$instance = new Router();
         }
+        // Gibt die Singleton-Instanz des Routers zurück.
         return self::$instance;
     }
 
-    // Fügt eine neue Route zur Liste der Routen hinzu.
+    // Eine private Methode `add`, um eine neue Route zum Router hinzuzufügen.
     private function add(Route $route)
     {
-        // Stellt sicher, dass $this->routes ein RouteCollection-Objekt ist.
+        // Initialisiert $this->routes mit einem RouteCollection-Objekt, falls noch nicht geschehen.
         if ($this->routes == null) {
             $this->routes = new RouteCollection([]);
         }
 
-        // Fügt die neue Route zu $this->routes hinzu.
+        // Fügt die Route zur RouteCollection hinzu.
         $this->routes->append($route);
         return $this;
     }
 
-    // Definiert eine GET-Route.
-    public function get($uri, $controller, $clousure = 'index')
+    // Eine öffentliche Methode, um eine GET-Route zu definieren.
+    public function get($uri, $controller, $closure = 'index')
     {
-        // Erstellt eine neue Route und fügt sie zur Liste hinzu.
-        return $this->add(new Route($uri, 'GET', $controller, $clousure));
+        // Erstellt und fügt eine neue Route mit der HTTP-Methode GET hinzu.
+        return $this->add(new Route($uri, 'GET', $controller, $closure));
     }
 
-    // Verarbeitet eingehende Anfragen und leitet sie an die entsprechenden Controller weiter.
+    // Verarbeitet die eingehenden Anfragen und leitet sie an die entsprechenden Controller weiter.
     public function route()
     {
         // Durchläuft alle definierten Routen.
         foreach ($this->routes as $route) {
-            // Überprüft, ob die aktuelle Anfrage zu dieser Route passt.
+            // Ruft `matchRoutes` auf, um zu überprüfen, ob die aktuelle Anfrage zur Route passt.
             if ($this->matchRoutes($route)) {
-                // Hier würde die entsprechende Aktion ausgeführt.
+                // Führt die Aktion aus, wenn die Route passt.
             }
         }
     }
 
-    // Überprüft, ob die aktuelle Anfrage zu einer bestimmten Route passt.
+    // Eine private Methode, um zu überprüfen, ob eine Route zur aktuellen Anfrage passt.
     private function matchRoutes(Route $route): bool
     {
-        // Holt die HTTP-Methode der Anfrage.
+        // Überprüft, ob die HTTP-Methode der Anfrage mit der der Route übereinstimmt.
         $server_method = strtoupper($_SERVER['REQUEST_METHOD']);
-        // Wenn die Methode nicht übereinstimmt, ist die Route nicht passend.
         if ($route->method != $server_method) {
             return false;
         }
 
-        // Vergleicht die angeforderte URI mit dem Muster der Route.
-        // Hier vereinfacht, um den Mechanismus darzustellen.
+        // Vereinfachte Überprüfung der Übereinstimmung der URI.
         $server_uri = preg_replace("/(^\/)|(\/$)/", "", parse_url($_SERVER['REQUEST_URI'])['path']);
 
-        // Weitere Logik würde hier folgen, um die Route vollständig abzugleichen.
+        // Die Logik, um die Übereinstimmung der Route vollständig zu überprüfen, würde hier folgen.
 
-        // Falsch zurückgeben, wenn keine Übereinstimmung gefunden wird.
+        // Gibt `false` zurück, wenn keine Übereinstimmung gefunden wird.
         return false;
     }
 }

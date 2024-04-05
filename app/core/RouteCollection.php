@@ -1,49 +1,50 @@
 <?php
 
-// Legt fest, dass dieser Code im 'App\Core' Bereich des Projekts ist.
+// Gibt an, dass dieser Code im Namespace 'App\Core' gehört, was für die Organisation des Projekts hilft.
 namespace App\Core;
 
-// Importiert die benötigten Klassen.
+// Importiert die notwendigen Standardklassen aus PHP.
 use ArrayObject;
 use InvalidArgumentException;
 
-// `RouteCollection` ist eine spezielle Art von Array, das für Routen verwendet wird.
+// `RouteCollection` ist eine Sammlung, die speziell für das Speichern von Routenobjekten entwickelt wurde.
 class RouteCollection extends ArrayObject
 {
-    // Der Konstruktor wird aufgerufen, wenn eine neue `RouteCollection` erstellt wird.
+    // Konstruktor der Klasse, der beim Erstellen eines neuen `RouteCollection`-Objekts aufgerufen wird.
     public function __construct(array $items = [])
     {
-        // Geht jedes Element in dem übergebenen Array durch.
+        // Durchläuft jedes Element im übergebenen Array.
         foreach ($items as $item) {
-            // Überprüft, ob jedes Element eine Instanz von `Route` ist.
+            // Überprüft, ob jedes Element eine Instanz der `Route`-Klasse ist.
             $this->validate($item);
         }
     }
 
-    // Eine geschützte Methode, die überprüft, ob ein Wert eine Instanz von `Route` ist.
+    // Geschützte Methode, die sicherstellt, dass ein übergebener Wert eine Instanz von `Route` ist.
     protected function validate($value): void
     {
+        // Wirft eine Exception, wenn der Wert keine Instanz von `Route` ist.
         if (!$value instanceof Route) {
-            // Wenn nicht, wird eine Exception geworfen.
             throw new InvalidArgumentException('Not an instance of Route!');
         }
     }
 
-    // Fügt einen neuen Wert zur Sammlung hinzu.
+    // Methode, um ein Element zur Sammlung hinzuzufügen.
     public function append($value): void
     {
-        // Überprüft den Wert, bevor er hinzugefügt wird.
+        // Validiert das hinzuzufügende Element.
         $this->validate($value);
-        // Fügt den Wert zur Sammlung hinzu, indem die `append` Methode der Elternklasse (`ArrayObject`) aufgerufen wird.
+        // Fügt das Element zur Sammlung hinzu, indem die `append` Methode der Basisklasse `ArrayObject` aufgerufen wird.
         parent::append($value);
     }
 
-    // Setzt einen Wert an einer bestimmten Stelle in der Sammlung.
+    // Setzt ein Element an einer bestimmten Stelle in der Sammlung.
     public function offsetSet($key, $value): void
     {
-        // Überprüft den Wert, bevor er gesetzt wird.
+        // Validiert das zu setzende Element.
         $this->validate($value);
-        // Ruft die `offsetSet` Methode der Elternklasse auf, um den Wert zu setzen.
+        // Ruft die `offsetSet` Methode der Basisklasse auf, um das Element an der angegebenen Stelle zu setzen.
         parent::offsetSet($key, $value);
     }
 }
+
