@@ -20,6 +20,7 @@ class Router
     private array $data = [];
 
     // Die `getInstance`-Methode implementiert das Singleton-Muster. Sie gibt immer dieselbe Instanz des Routers zurück.
+    //! überprüft ob bereits eine instanz in der objektvariable $instance gespeichert ist, wenn nicht wird eine neue instanz erzeugt.
     public static function getInstance()
     {
         // Erstellt eine neue Instanz des Routers, wenn noch keine existiert.
@@ -30,20 +31,18 @@ class Router
         return self::$instance;
     }
 
-    // Eine private Methode `add`, um eine neue Route zum Router hinzuzufügen.
+    //!  
     private function add(Route $route)
     {
-        // Initialisiert $this->routes mit einem RouteCollection-Objekt, falls noch nicht geschehen.
         if ($this->routes == null) {
             $this->routes = new RouteCollection([]);
         }
-
-        // Fügt die Route zur RouteCollection hinzu.
         $this->routes->append($route);
         return $this;
     }
 
-    // Eine öffentliche Methode, um eine GET-Route zu definieren.
+    //! führt für jede Route in routes.php die funktion add() aus.
+    //! erzeugt ein neues Route Objekt und übergibt diese an die add() funktion
     public function get($uri, $controller, $closure = 'index')
     {
         // Erstellt und fügt eine neue Route mit der HTTP-Methode GET hinzu.
@@ -53,8 +52,10 @@ class Router
     // Verarbeitet die eingehenden Anfragen und leitet sie an die entsprechenden Controller weiter.
     public function route()
     {
+        //! für jesen eintrag in der Objektvariable $routes wird die methode matchRoutes() aufgerufen.
         // Durchläuft alle definierten Routen.
         foreach ($this->routes as $route) {
+            //! vergleicht jeden eintrag von routes.php mit der eingegeben Uri vom User
             // Ruft `matchRoutes` auf, um zu überprüfen, ob die aktuelle Anfrage zur Route passt.
             if ($this->matchRoutes($route)) {
                 // Führt die Aktion aus, wenn die Route passt.
@@ -62,21 +63,90 @@ class Router
         }
     }
 
-    // Eine private Methode, um zu überprüfen, ob eine Route zur aktuellen Anfrage passt.
+
+    private function matchSimpleRoute(Route $route, string $server_uri, string $server_method): bool
+    {
+        $routeUri = $route->uri;
+
+        if (!empty($server_uri)) {
+            $routeUri = preg_replace("/(^\/)|(\/$)/", "", $route->uri);
+            $reqUri = preg_replace("/(^\/)|(\/$)/", "", $server_uri);
+        } else {
+            $reqUri = "/";
+        }
+
+        return $reqUri == $routeUri && $route->method == $server_method;
+    } 
+    
+ 
     private function matchRoutes(Route $route): bool
     {
-        // Überprüft, ob die HTTP-Methode der Anfrage mit der der Route übereinstimmt.
-        $server_method = strtoupper($_SERVER['REQUEST_METHOD']);
+        //* aktuelle Request Methode finden.
+        $server_method = strtoupper($_SERVER["REQUEST_METHOD"]);
+
+        //* Abgleich der Request Methode von routes.php mit der Request Methode der Useranfrage
         if ($route->method != $server_method) {
             return false;
         }
 
-        // Vereinfachte Überprüfung der Übereinstimmung der URI.
-        $server_uri = preg_replace("/(^\/)|(\/$)/", "", parse_url($_SERVER['REQUEST_URI'])['path']);
+        
+        //! ersetzen des ersten "/" mit nichts in Wert $_SERVER["REQUEST_URI"])['path']
+        $server_uri = preg_replace("/(^\/)|(\/$)/", "", parse_url($_SERVER["REQUEST_URI"])['path']);
+        parse_str($_SERVER['QUERY_STRING'], $queries);
 
-        // Die Logik, um die Übereinstimmung der Route vollständig zu überprüfen, würde hier folgen.
+        //! anlegen deer Zwei Arrays
+        $params = [];
+        $paramKey = [];
+        
 
-        // Gibt `false` zurück, wenn keine Übereinstimmung gefunden wird.
+        preg_match_all("/(?<={).+?(?=})/", $route->uri, $paramMatches);
+
+        if (empty($paramMatches[0])) {
+            $this->data = compact("queries");
+            return $this->matchSimpleRoute($route, $server_uri, $server_method);
+        }
+
+        foreach ($paramMatches[0] as $key) {
+            $paramKey[$key] = $key;
+        }
+
+        if (!empty($server_uri)) {
+            $routeUri = preg_replace("/(^\/)|(\/$)/", "", $route->uri);
+            $reqUri = preg_replace("/(^\/)|(\/$)/", "", $server_uri);
+        } else {
+            $reqUri = "/";
+        }
+
+        $uri = explode("/", $routeUri);
+
+        $indexNum = [];
+
+        foreach ($uri as $index => $param) {
+            if (preg_match("/{.*}/", $param)) {
+                $indexNum[] = $index;
+            }
+        }
+
+        $reqUri = explode("/", $reqUri);
+
+        foreach ($indexNum as $key => $index) {
+            if (empty($regUri[$index])) {
+                return false;
+            }
+
+            $params[$paramKey[$key]] = $reqUri[$index];
+            $reqUri[$index] = "{.*}";
+        }
+
+        $reqUri = implode("/", $reqUri);
+        $reqUri = str_replace("/", '\\/', $reqUri);
+
+        if(preg_match("/$reqUri/", $routeUri)) {
+            $this->data = compact("queries", "params");
+            return true;
+        }
+
         return false;
     }
-}
+} 
+

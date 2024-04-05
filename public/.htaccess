@@ -1,3 +1,6 @@
+# alle rewquest werden hier an index.php weitergeleitet.
+
+
 RewriteEngine On
 
 # If requested File is not a directory

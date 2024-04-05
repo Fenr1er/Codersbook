@@ -10,6 +10,8 @@
  */
 
 // Definiert eine Funktion `dd`, die zum Debuggen verwendet wird, um den Wert einer Variablen formatiert auszugeben und das Skript zu beenden.
+//! dd -> dump and die -> dient zur ausdgabe von Werten/Arrays/Objekten in einigermaßen lesbaren Form,
+//! die() beendet das Skript
 function dd($value) {
     echo '<pre>';            // Beginnt die Ausgabe in vorformatierter Weise, um sie lesbarer zu machen.
                              // `<pre>` sorgt dafür, dass die Ausgabe so erscheint, wie sie formatiert ist (mit Zeilenumbrüchen und Leerzeichen).
@@ -21,6 +23,7 @@ function dd($value) {
 }
 
 // Definiert eine Funktion `base_path`, die einen absoluten Pfad basierend auf einem Basispfad generiert.
+//! sorgt dafür das die constante nicht immer angesprochen werden muss.
 function base_path($path) {
     // Verwendet `BASE_PATH`, eine globale Konstante, die den Basispfad des Projekts enthält.
     // `BASE_PATH` sollte irgendwo im Projekt definiert sein, normalerweise in einer zentralen Konfigurationsdatei.
@@ -28,6 +31,7 @@ function base_path($path) {
 }
 
 // Definiert eine Funktion `config`, die eine Konfigurationsdatei lädt.
+//! config -> lädt die config.php Datei
 function config($name){
     // Der Pfad zur Konfigurationsdatei wird zusammengesetzt und die Datei wird mittels `require` eingebunden.
     // Erwartet wird, dass die Konfigurationsdatei ein Array zurückgibt, das dann von der Funktion zurückgegeben wird.

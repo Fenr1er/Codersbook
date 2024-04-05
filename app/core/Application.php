@@ -15,6 +15,7 @@ class Application
     
     // Eine statische Methode zum Festlegen der `Instance`-Objektinstanz.
     // Diese Methode ermöglicht es, die zentrale Instanz von außerhalb zu definieren und zu steuern.
+    //! Weist der Objektvaraiabel die übergebene Instanz zu
     public static function setInstance(Instance $instance)
     {
         // Das übergebene `Instance`-Objekt wird in der statischen Variable `$instance` gespeichert.
@@ -24,10 +25,12 @@ class Application
 
     // Eine statische Methode, um einen Schlüssel an eine Closure oder Funktion zu binden.
     // Diese Methode ist nützlich für die Abhängigkeitsinjektion und Konfiguration von Diensten.
+    //! ruft die bind funktion von Instance.php auf
     public static function bind(string $key, Closure $resolver)
     {
         // Nutzt die `bind`-Methode des `Instance`-Objekts, um die Bindung durchzuführen.
         // Dieser Vorgang registriert eine gegebene Funktion oder Closure unter einem Schlüssel in der Instanz.
+        //! Self :: wird in einer statischen Funtion verwendet
         self::$instance->bind($key, $resolver);
     }
 }
