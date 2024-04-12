@@ -41,12 +41,30 @@ class Router
         return $this;
     }
 
+    private function render(string $controller, string $closure, array $data = [])
+    {
+        if (count($this->data) > 0) {
+            $data = $this->data;
+        }
+        $instance = new $controller($data);
+        call_user_func(array($instance, $closure));
+    }
+
+
+
+
     //! führt für jede Route in routes.php die funktion add() aus.
     //! erzeugt ein neues Route Objekt und übergibt diese an die add() funktion
     public function get($uri, $controller, $closure = 'index')
     {
         // Erstellt und fügt eine neue Route mit der HTTP-Methode GET hinzu.
         return $this->add(new Route($uri, 'GET', $controller, $closure));
+    }
+    
+    public function post($uri, $controller, $closure = 'index')
+    {
+        // Erstellt und fügt eine neue Route mit der HTTP-Methode POST hinzu.
+        return $this->add(new Route($uri, 'POST', $controller, $closure));
     }
 
     // Verarbeitet die eingehenden Anfragen und leitet sie an die entsprechenden Controller weiter.
@@ -59,6 +77,8 @@ class Router
             // Ruft `matchRoutes` auf, um zu überprüfen, ob die aktuelle Anfrage zur Route passt.
             if ($this->matchRoutes($route)) {
                 // Führt die Aktion aus, wenn die Route passt.
+                $this->render($route->controller, $route->closure);
+                exit();
             }
         }
     }
@@ -68,7 +88,7 @@ class Router
     {
         // aktuelle Request Methode finden.
         $routeUri = $route->uri;
-        
+
         // Überprüft, ob die URI der Route mit der Anfrage übereinstimmt.
         if (!empty($server_uri)) {
             // ersetzen des ersten "/" mit nichts in Wert $_SERVER["REQUEST_URI"])['path']

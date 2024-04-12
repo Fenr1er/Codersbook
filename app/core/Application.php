@@ -33,4 +33,10 @@ class Application
         //! Self :: wird in einer statischen Funtion verwendet
         self::$instance->bind($key, $resolver);
     }
+    
+    public static function resolve(string $key)
+    {
+        return self::$instance->resolve($key);
+    }
+
 }

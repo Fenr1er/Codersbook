@@ -38,3 +38,18 @@ function config($name){
     return require BASE_PATH . "app/config/" . $name . "_config.php";
     // Dies ermöglicht den Zugriff auf Konfigurationseinstellungen, die in der angegebenen Datei definiert sind.
 }
+
+// Definiert eine Funktion `view`, die eine View-Datei lädt und optional Daten an die View übergeben kann.
+function view($viewName, array $data = []) {
+   extract($data);
+   $viewName = str_replace(".", DIRECTORY_SEPARATOR, $viewName);
+   require base_path("views/{$viewName}.view.php");
+}
+
+function component($name, array $data = []) {
+    if($data != null){
+        extract($data);
+    }
+
+    require base_path("views/components/". str_replace(".", DIRECTORY_SEPARATOR, $name) . ".php");
+}
