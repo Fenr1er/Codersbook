@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Core\Controller;
-
+use App\Core\Session;
 class HomeController extends Controller
 {
     public function index()
@@ -16,5 +16,17 @@ class HomeController extends Controller
         view('signup');
     }
 
+    function login()
+    {
+        view('login');
+    }
 
+    public function logout()
+    {
+        if(Session::destroy()){
+            header("Location:/");
+            exit();
+        }
+
+    }
 }

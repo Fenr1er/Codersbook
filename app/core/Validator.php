@@ -17,4 +17,12 @@ class Validator
             'password' => $password
         ];
     }
+
+    public static function loginValidation($data)
+    {
+        $lname = htmlspecialchars($data['loginname']);
+        $pw = htmlspecialchars($data['password']);
+
+        return ['lname' => $lname, 'pw' => $pw];
+}
 }
