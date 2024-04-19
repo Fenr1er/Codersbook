@@ -35,7 +35,7 @@ function base_path($path) {
 function config($name){
     // Der Pfad zur Konfigurationsdatei wird zusammengesetzt und die Datei wird mittels `require` eingebunden.
     // Erwartet wird, dass die Konfigurationsdatei ein Array zurückgibt, das dann von der Funktion zurückgegeben wird.
-    return require BASE_PATH . "app/config/" . $name . "_config.php";
+    return require BASE_PATH . "config/" . $name . "_config.php";
     // Dies ermöglicht den Zugriff auf Konfigurationseinstellungen, die in der angegebenen Datei definiert sind.
 }
 
