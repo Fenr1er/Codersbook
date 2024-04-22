@@ -4,7 +4,7 @@ $(document).ready(function () {
   });
 });
 $(document).on("click", function (event) {
-  var $trigger = $("#navusermenu");
+  var $trigger = $("#usermenu");
   if ($trigger !== event.target && !$trigger.has(event.target).length) {
     $("#usermenudropdowncontent").slideUp("fast");
   }

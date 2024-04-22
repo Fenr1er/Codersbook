@@ -28,12 +28,21 @@ use App\Core\Session;
             <?php } ?>
         </div>
 
-        <div id="navusermenu" class="">
+        <div id="navusermenu" class="flex items-center">
             <?php if (Auth::is_loggedin()) { ?>
-                <!--- < ?= ist ein kurzer Weg, um echo zu schreiben --->
-                <img id="usermenupic" src="imgs/<?= Session::get('profile_image') ?>" alt="" class="w-10 h-10 rounded-[50%] border">
-                <div id="usermenudropdowncontent" class ="hidden absolute w-1/12 h-auto bg-gray-500 rounded-md">
-                    <div class="w-full p-3 hover:bg-mine-teal-700"><a href="/logout">Logout</a></div>
+                <div class="text-3xl mr-5 text-gray-300">
+                    <i class='bx bxs-bell-ring mr-2'></i>
+                    <i class='bx bxs-message-square-dots'></i>
+                </div>
+
+                <div id="usermenu">
+                    <!--- < ?= ist ein kurzer Weg, um echo zu schreiben --->
+                    <img id="usermenupic" src="imgs/<?= Session::get('profile_image') ?>" alt="" class="w-10 h-10 rounded-[50%] border">
+                    <div id="usermenudropdowncontent" class="hidden top-[6vh] absolute w-1/12 h-auto bg-gray-500 rounded-md">
+                        <div class="w-full p-3 hover:bg-teal-700"><a href="/logout">Logout</a></div>
+                        <div class="w-full p-3 hover:bg-teal-700"><a href="/logout">Profile</a></div>
+                        <div class="w-full p-3 hover:bg-teal-700"><a href="/logout">Settings</a></div>
+                    </div>
                 </div>
             <?php } ?>
         </div>
